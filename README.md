@@ -150,14 +150,3 @@ if (percentage >= 80) { // Cambiar de 90 a 80
 - [ ] **API REST** para gestión de preguntas
 - [ ] **PWA** para uso offline
 
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
-
-## 👨‍💻 Autor
-
-Desarrollado con ❤️ y ⚡ para mejorar la educación en ingeniería eléctrica.
-
----
-
-**¿Te gustó el proyecto? ¡Dale una ⭐ en GitHub!**
