@@ -130,15 +130,6 @@ if (percentage >= 80) { // Cambiar de 90 a 80
 }
 ```
 
-## 🤝 Contribuciones
-
-¡Las contribuciones son bienvenidas! Si tienes ideas para mejorar el proyecto:
-
-1. Fork el repositorio
-2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit tus cambios (`git commit -am 'Agregar nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
-5. Abre un Pull Request
 
 ## 📝 Roadmap
 
