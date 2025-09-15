@@ -131,13 +131,4 @@ if (percentage >= 80) { // Cambiar de 90 a 80
 ```
 
 
-## 📝 Roadmap
-
-- [ ] **Modo multijugador** en tiempo real
-- [ ] **Exportar resultados** a PDF/Excel
-- [ ] **Categorías por tipo** de estructura
-- [ ] **Sistema de usuarios** con historial de progreso
-- [ ] **Modo de estudio** con explicaciones detalladas
-- [ ] **API REST** para gestión de preguntas
-- [ ] **PWA** para uso offline
 
