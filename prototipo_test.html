@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Estructuras de Distribución</title>
+    <style>
+        /* --- ESTILOS GENERALES (CSS) --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .quiz-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+            overflow: hidden;
+        }
+
+        .quiz-header {
+            background-color: #0056b3;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .quiz-body {
+            padding: 30px;
+        }
+
+        /* --- PANTALLAS --- */
+        #start-screen, #quiz-screen, #results-screen {
+            display: none; /* Se ocultan por defecto */
+        }
+
+        #start-screen.active, #quiz-screen.active, #results-screen.active {
+            display: block; /* La clase 'active' las muestra */
+        }
+        
+        /* --- ELEMENTOS --- */
+        h2 {
+            margin-top: 0;
+        }
+
+        #question-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 15px;
+            width: 100%;
+            text-align: left;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: #e9ecef;
+            border-color: #b1b9c1;
+        }
+        
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .option-btn.correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+            font-weight: bold;
+        }
+
+        .option-btn.incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        #feedback {
+            margin-top: 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        
+        #next-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 15px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.2s;
+        }
+        
+        #next-btn:hover {
+            background-color: #0056b3;
+        }
+
+        #question-count, #score {
+            font-weight: bold;
+        }
+        
+        .input-group {
+            margin: 20px 0;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .input-group input {
+            width: 100px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1>Test de Estructuras de Distribución</h1>
+        </div>
+        <div class="quiz-body">
+            <div id="start-screen" class="active">
+                <h2>¡Bienvenido!</h2>
+                <p>Este es un test para afianzar tus conocimientos sobre las estructuras de líneas de media tensión.</p>
+                <div class="input-group">
+                    <label for="num-questions">¿Cuántas preguntas deseas responder?</label>
+                    <input type="number" id="num-questions" value="10" min="1" max="20">
+                </div>
+                <button id="start-btn">Iniciar Test</button>
+            </div>
+
+            <div id="quiz-screen">
+                <p id="question-count">Pregunta X de Y</p>
+                <h2 id="question-text"></h2>
+                <img id="question-image" src="" alt="Figura de la estructura" style="display: none;">
+                <div id="options-container" class="options-container"></div>
+                <div id="feedback"></div>
+                <button id="next-btn" style="display: none;">Siguiente Pregunta</button>
+            </div>
+
+            <div id="results-screen">
+                <h2>¡Test Completado!</h2>
+                <p>Tu puntuación final es:</p>
+                <h3 id="score">X de Y correctas</h3>
+                <button id="restart-btn">Intentar de Nuevo</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // --- LÓGICA DE LA APLICACIÓN (JAVASCRIPT) - VERSIÓN VISUAL ---
+
+// 1. BASE DE DATOS (Agrega aquí tus estructuras. He puesto ejemplos)
+const quizDatabase = [
+    {
+        id: "A-I-1",
+        nombre: "Estructura primaria una fase en tangente (0° - 5°)",
+        imagenUrl: "1757470908683blob.jpg"
+        //C:\Users\indee\OneDrive\Documents\paps\test\1757470908683blob.jpg
+    },
+    {
+        id: "A-I-1V",
+        nombre: "Estructura primaria una fase voladiza en tangente (0° - 5°)",
+        imagenUrl: "1757470908686blob.jpg"
+        //C:\Users\indee\OneDrive\Documents\paps\test\1757470908686blob.jpg
+    },
+    {
+        id: "A-I-2",
+        nombre: "Estructura primaria una fase en ángulo (5° - 30°)",
+        imagenUrl: "1757470908688blob.jpg"
+        //C:\Users\indee\OneDrive\Documents\paps\test\1757470908688blob.jpg
+
+    },
+    {
+        id: "A-I-2V",
+        nombre: "Estructura primaria una fase voladiza en ángulo (5° - 30°)",
+        imagenUrl: "1757470908690blob.jpg"
+        //C:\Users\indee\OneDrive\Documents\paps\test\1757470908690blob.jpg
+    },
+    {
+        id: "A-I-3",
+        nombre: "Estructura primaria una fase de paso vertical (30° - 60°)",
+        imagenUrl: "1757470908692blob.jpg"
+        //C:\Users\indee\OneDrive\Documents\paps\test\1757470908692blob.jpg
+    },
+    {
+        id: "A-I-4",
+        nombre: "Estructura primaria una fase en remate",
+        imagenUrl: "1757470908694blob.jpg"
+        //C:\Users\indee\OneDrive\Documents\paps\test\1757470908694blob.jpg
+    },
+    {
+        id: "A-I-4A",
+        nombre: "Estructura primaria una fase en remate a 180° de remate existente una fase",
+        imagenUrl: "1757470908696blob.jpg"
+        //C:\Users\indee\OneDrive\Documents\paps\test\1757470908696blob.jpg
+    },
+    {
+        id: "A-I-4B",
+        nombre: "Estructura primaria una fase en remate a 180° de remate existente de dos o tres fases",
+        imagenUrl: "1757470908698blob.jpg"
+        //C:\Users\indee\OneDrive\Documents\paps\test\1757470908698blob.jpg
+    },
+    {
+        id: "A-I-4C",
+        nombre: "Estructura primaria una fase en remate a 90° de línea de paso o remate existente",
+        imagenUrl: "1757470908700blob.jpg"
+        //C:\Users\indee\OneDrive\Documents\paps\test\1757470908700blob.jpg
+    },
+    {
+        id: "A-I-4V",
+        nombre: "Estructura primaria una fase voladiza en remate",
+        imagenUrl: "1757470908702blob.jpg"
+        //C:\Users\indee\OneDrive\Documents\paps\test\1757470908702blob.jpg
+    },
+    {
+        id: "A-I-5",
+        nombre: "Estructura primaria una fase en doble remate (0° - 60°)",
+        imagenUrl: "1757470908704blob.jpg"
+        //C:\Users\indee\OneDrive\Documents\paps\test\1757470908704blob.jpg
+    },
+    {
+        id: "A-I-5V",
+        nombre: "Estructura primaria una fase voladiza en doble remate (0° - 60°)",
+        imagenUrl: "1757470908706blob.jpg"
+        //C:\Users\indee\OneDrive\Documents\paps\test\1757470908706blob.jpg
+    },
+    {
+        id: "A-I-6",
+        nombre: "Estructura primaria una fase en doble remate (60° - 90°)",
+        imagenUrl: "1757470908709blob.jpg"
+        //C:\Users\indee\OneDrive\Documents\paps\test\1757470908709blob.jpg
+    },
+    {
+        id: "A-I-7",
+        nombre: "Estructura primaria una fase en tangente (0° - 5°) y derivación",
+        imagenUrl: "1757470908711blob.jpg"
+        //C:\Users\indee\OneDrive\Documents\paps\test\1757470908711blob.jpg
+    },
+    {
+        id: "A-I-7V",
+        nombre: "Estructura primaria una fase voladiza en tangente (0° - 5°) y derivación",
+        imagenUrl: "1757470908713blob.jpg"
+        //C:\Users\indee\OneDrive\Documents\paps\test\1757470908713blob.jpg
+    },
+    {
+        id: "A-I-8",
+        nombre: "Estructura primaria una fase en ángulo (5° - 30°) y derivación",
+        imagenUrl: "1757470908715blob.jpg"
+        //C:\Users\indee\OneDrive\Documents\paps\test\1757470908715blob.jpg
+    },
+    {
+        id: "A-I-8V",
+        nombre: "Estructura primaria una fase voladiza en ángulo (5° - 30°) y derivación",
+        imagenUrl: "1757470908717blob.jpg"
+        // C:\Users\indee\OneDrive\Documents\paps\test\1757470908717blob.jpg
+    },
+    {
+        id: "A-I-9",
+        nombre: "Estructura primaria una fase en doble remate (0° - 60°) y derivación",
+        imagenUrl: "1757470908719blob.jpg"
+        // C:\Users\indee\OneDrive\Documents\paps\test\1757470908719blob.jpg
+    },
+    {
+        id: "A-I-9V",
+        nombre: "Estructura primaria una fase voladiza en doble remate (0° - 60°) y derivación",
+        imagenUrl: "1757470908722blob.jpg"
+        // C:\Users\indee\OneDrive\Documents\paps\test\1757470908722blob.jpg
+    }
+    
+];
+
+// 2. ELEMENTOS DEL DOM (Sin cambios)
+const startScreen = document.getElementById('start-screen');
+const quizScreen = document.getElementById('quiz-screen');
+const resultsScreen = document.getElementById('results-screen');
+const startBtn = document.getElementById('start-btn');
+const nextBtn = document.getElementById('next-btn');
+const restartBtn = document.getElementById('restart-btn');
+const numQuestionsInput = document.getElementById('num-questions');
+
+const questionCountEl = document.getElementById('question-count');
+const questionTextEl = document.getElementById('question-text');
+const questionImageEl = document.getElementById('question-image');
+const optionsContainer = document.getElementById('options-container');
+const feedbackEl = document.getElementById('feedback');
+const scoreEl = document.getElementById('score');
+
+// 3. ESTADO DEL QUIZ (Sin cambios)
+let currentQuestionIndex = 0;
+let score = 0;
+let questions = [];
+let totalQuestions = 5;
+
+// 4. GENERADORES DE PREGUNTAS (Versión Mixta)
+
+// Plantilla #1: Preguntas con el CÓDIGO CORTO ('id')
+function generateIdQuestion(correctStructure) {
+    const correctAnswer = correctStructure.id;
+    const incorrectOptions = [];
+    const tempDatabase = [...quizDatabase].sort(() => Math.random() - 0.5);
+
+    for (const structure of tempDatabase) {
+        if (structure.id !== correctAnswer && !incorrectOptions.includes(structure.id)) {
+            incorrectOptions.push(structure.id);
+        }
+        if (incorrectOptions.length >= 3) break;
+    }
+
+    const allOptions = [
+        { text: correctAnswer, correct: true },
+        { text: incorrectOptions[0], correct: false },
+        { text: incorrectOptions[1], correct: false },
+        { text: incorrectOptions[2], correct: false }
+    ].sort(() => Math.random() - 0.5);
+
+    return {
+        text: `Identifica el CÓDIGO de la siguiente estructura:`,
+        image: correctStructure.imagenUrl,
+        options: allOptions,
+        answer: correctAnswer
+    };
+}
+
+// Plantilla #2: Preguntas con la DESCRIPCIÓN LARGA ('nombre')
+function generateNameQuestion(correctStructure) {
+    const correctAnswer = correctStructure.nombre;
+    const incorrectOptions = [];
+    const tempDatabase = [...quizDatabase].sort(() => Math.random() - 0.5);
+
+    for (const structure of tempDatabase) {
+        if (structure.nombre !== correctAnswer && !incorrectOptions.includes(structure.nombre)) {
+            incorrectOptions.push(structure.nombre);
+        }
+        if (incorrectOptions.length >= 3) break;
+    }
+
+    const allOptions = [
+        { text: correctAnswer, correct: true },
+        { text: incorrectOptions[0], correct: false },
+        { text: incorrectOptions[1], correct: false },
+        { text: incorrectOptions[2], correct: false }
+    ].sort(() => Math.random() - 0.5);
+
+    return {
+        text: `Identifica la DESCRIPCIÓN de la siguiente estructura:`,
+        image: correctStructure.imagenUrl,
+        options: allOptions,
+        answer: correctAnswer
+    };
+}
+
+// Lista de todas las plantillas de preguntas disponibles
+const questionGenerators = [
+    generateIdQuestion,
+    generateNameQuestion
+];
+
+
+// 5. LÓGICA DEL QUIZ (Actualizada para elegir preguntas al azar)
+function startQuiz() {
+    totalQuestions = parseInt(numQuestionsInput.value) || 5;
+    
+    if (quizDatabase.length < 4) {
+        alert("Error: Se necesitan al menos 4 estructuras en la base de datos para generar las opciones.");
+        return;
+    }
+    if (totalQuestions > quizDatabase.length) {
+        totalQuestions = quizDatabase.length;
+        numQuestionsInput.value = totalQuestions;
+    }
+
+    score = 0;
+    currentQuestionIndex = 0;
+    questions = [];
+    
+    const shuffledDb = [...quizDatabase].sort(() => Math.random() - 0.5);
+
+    // Generar la lista de preguntas mezclando los tipos
+    for (let i = 0; i < totalQuestions; i++) {
+        // Elegir una plantilla de pregunta al azar de la lista 'questionGenerators'
+        const randomGenerator = questionGenerators[Math.floor(Math.random() * questionGenerators.length)];
+        // Crear la pregunta usando la plantilla aleatoria y una estructura de la base de datos
+        questions.push(randomGenerator(shuffledDb[i]));
+    }
+
+    startScreen.classList.remove('active');
+    resultsScreen.classList.remove('active');
+    quizScreen.classList.add('active');
+    displayQuestion();
+}
+
+function displayQuestion() {
+    feedbackEl.textContent = '';
+    nextBtn.style.display = 'none';
+    optionsContainer.innerHTML = '';
+    
+    const question = questions[currentQuestionIndex];
+
+    questionCountEl.textContent = `Pregunta ${currentQuestionIndex + 1} de ${totalQuestions}`;
+    questionTextEl.textContent = question.text;
+    questionImageEl.src = question.image;
+    questionImageEl.style.display = 'block';
+
+    question.options.forEach(option => {
+        const button = document.createElement('button');
+        button.textContent = option.text;
+        button.classList.add('option-btn');
+        button.addEventListener('click', () => selectAnswer(button, option.correct, question.answer));
+        optionsContainer.appendChild(button);
+    });
+}
+
+function selectAnswer(button, isCorrect, correctAnswer) {
+    Array.from(optionsContainer.children).forEach(btn => btn.disabled = true);
+    
+    if (isCorrect) {
+        score++;
+        button.classList.add('correct');
+        feedbackEl.textContent = '¡Correcto!';
+        feedbackEl.style.color = '#155724';
+    } else {
+        button.classList.add('incorrect');
+        feedbackEl.innerHTML = `Incorrecto. La respuesta correcta era: <strong>${correctAnswer}</strong>`;
+        feedbackEl.style.color = '#721c24';
+        Array.from(optionsContainer.children).forEach(btn => {
+            if (btn.textContent === correctAnswer) {
+                btn.classList.add('correct');
+            }
+        });
+    }
+    
+    nextBtn.style.display = 'block';
+}
+
+function showResults() {
+    quizScreen.classList.remove('active');
+    resultsScreen.classList.add('active');
+    scoreEl.textContent = `${score} de ${totalQuestions} correctas`;
+}
+
+// 6. EVENT LISTENERS (Sin cambios)
+startBtn.addEventListener('click', startQuiz);
+
+nextBtn.addEventListener('click', () => {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < totalQuestions) {
+        displayQuestion();
+    } else {
+        showResults();
+    }
+});
+
+restartBtn.addEventListener('click', () => {
+    resultsScreen.classList.remove('active');
+    startScreen.classList.add('active');
+});
+
+    </script>
+</body>
+</html>

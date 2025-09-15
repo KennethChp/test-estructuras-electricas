@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Estructuras de Distribución - Versión Mejorada</title>
+    <style>
+        /* --- VARIABLES CSS Y MODO OSCURO --- */
+        :root {
+            --primary-color: #0056b3;
+            --primary-hover: #004494;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --bg-primary: #f0f2f5;
+            --bg-secondary: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #ced4da;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.2);
+            --transition-speed: 0.3s;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --border-color: #444444;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- ANIMACIONES KEYFRAMES --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @keyframes correctAnswer {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); background-color: #d4edda; }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes incorrectAnswer {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        @keyframes progressFill {
+            from { width: 0%; }
+            to { width: var(--progress-width); }
+        }
+
+        @keyframes starBurst {
+            0% { transform: scale(0) rotate(0deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+            100% { transform: scale(1) rotate(360deg); opacity: 1; }
+        }
+
+        /* --- ESTILOS GENERALES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            transition: all var(--transition-speed) ease;
+        }
+
+        /* --- TOGGLE MODO OSCURO --- */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .theme-toggle span {
+            font-size: 24px;
+            transition: transform var(--transition-speed);
+        }
+
+        .theme-toggle:hover span {
+            transform: rotate(20deg);
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        .quiz-container {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 700px;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+            transition: all var(--transition-speed);
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 10%, transparent 10%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .quiz-header h1 {
+            position: relative;
+            z-index: 1;
+            font-size: 1.8em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* --- BARRA DE PROGRESO --- */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            animation: progressFill 0.5s ease forwards;
+        }
+
+        /* --- BODY DEL QUIZ --- */
+        .quiz-body {
+            padding: 30px;
+            min-height: 400px;
+            position: relative;
+        }
+
+        /* --- PANTALLAS --- */
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* --- PANTALLA DE INICIO --- */
+        #start-screen h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        #start-screen p {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .input-group {
+            margin: 30px 0;
+            animation: slideIn 0.6s ease;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 120px;
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all var(--transition-speed);
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+            transform: scale(1.05);
+        }
+
+        /* --- BOTONES MEJORADOS --- */
+        button {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* --- PANTALLA DE QUIZ --- */
+        #question-count {
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        /* --- TEMPORIZADOR --- */
+        .timer-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: none;
+        }
+
+        .timer-container.active {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .timer-circle {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+
+        .timer-svg {
+            transform: rotate(-90deg);
+        }
+
+        .timer-background {
+            fill: none;
+            stroke: var(--border-color);
+            stroke-width: 4;
+        }
+
+        .timer-progress {
+            fill: none;
+            stroke: var(--primary-color);
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-dasharray: 188.5;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 1s linear, stroke 0.3s;
+        }
+
+        .timer-progress.warning {
+            stroke: var(--warning-color);
+            animation: pulse 1s infinite;
+        }
+
+        .timer-progress.danger {
+            stroke: var(--danger-color);
+            animation: pulse 0.5s infinite;
+        }
+
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .timer-text.warning {
+            color: var(--warning-color);
+        }
+
+        .timer-text.danger {
+            color: var(--danger-color);
+        }
+
+        #question-text {
+            color: var(--text-primary);
+            margin: 20px 0;
+            font-size: 1.2em;
+            line-height: 1.4;
+        }
+
+        #question-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 3px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-speed);
+            cursor: zoom-in;
+        }
+
+        #question-image:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .image-loader {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .image-loader.loading {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* --- OPCIONES DE RESPUESTA --- */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .option-btn {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px 20px;
+            width: 100%;
+            text-align: left;
+            font-size: 16px;
+            color: var(--text-primary);  /* FIX: Añadido color de texto */
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: translateY(-50%);
+            transition: left 0.5s;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: var(--bg-secondary);
+            border-color: var(--primary-color);
+            transform: translateX(5px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .option-btn:hover:not(:disabled)::after {
+            left: 100%;
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .option-btn.correct {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border-color: var(--success-color);
+            color: #155724;
+            font-weight: bold;
+            animation: correctAnswer 0.6s ease;
+        }
+
+        .option-btn.incorrect {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            border-color: var(--danger-color);
+            color: #721c24;
+            animation: incorrectAnswer 0.5s ease;
+        }
+
+        /* --- FEEDBACK --- */
+        #feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        #feedback.correct {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border: 2px solid var(--success-color);
+        }
+
+        #feedback.incorrect {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border: 2px solid var(--danger-color);
+        }
+
+        /* --- PANTALLA DE RESULTADOS --- */
+        #results-screen {
+            text-align: center;
+        }
+
+        #results-screen h2 {
+            color: var(--primary-color);
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            animation: pulse 1s ease infinite;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: var(--shadow-md);
+        }
+
+        #score {
+            font-size: 3em;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 20px 0;
+        }
+
+        .achievement {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffc107, #ff9800);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            margin: 10px;
+            animation: starBurst 1s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* --- SISTEMA DE ESTRELLAS --- */
+        .stars-container {
+            margin: 20px 0;
+        }
+
+        .star {
+            display: inline-block;
+            font-size: 40px;
+            color: #ddd;
+            margin: 0 5px;
+            transition: all var(--transition-speed);
+        }
+
+        .star.filled {
+            color: #ffc107;
+            animation: starBurst 0.5s ease;
+        }
+
+        /* --- CONTROLES DE SONIDO --- */
+        .sound-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            box-shadow: var(--shadow-md);
+        }
+
+        .sound-control:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .sound-control span {
+            font-size: 24px;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 600px) {
+            .quiz-container {
+                border-radius: 10px;
+            }
+
+            .quiz-header h1 {
+                font-size: 1.5em;
+            }
+
+            .option-btn {
+                padding: 15px;
+                font-size: 14px;
+            }
+
+            #score {
+                font-size: 2em;
+            }
+        }
+
+        /* --- TOOLTIP --- */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: var(--text-primary);
+            color: var(--bg-secondary);
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity var(--transition-speed);
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toggle Modo Oscuro -->
+    <div class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">
+        <span id="theme-icon">🌙</span>
+    </div>
+
+    <!-- Control de Sonido -->
+    <div class="sound-control" onclick="toggleSound()" title="Activar/Desactivar sonido">
+        <span id="sound-icon">🔊</span>
+    </div>
+
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1>⚡ Test de Estructuras de Distribución ⚡</h1>
+            <div class="progress-container" style="display: none;" id="progress-container">
+                <div class="progress-bar" id="progress-bar" style="--progress-width: 0%;"></div>
+            </div>
+        </div>
+
+        <div class="quiz-body">
+            <!-- Pantalla de Inicio -->
+            <div id="start-screen" class="screen active">
+                <h2>¡Bienvenido! 👋</h2>
+                <p>Pon a prueba tus conocimientos sobre las estructuras de líneas de media tensión. Este test interactivo te ayudará a dominar la identificación de diferentes configuraciones eléctricas.</p>
+
+                <div class="input-group">
+                    <label for="num-questions">¿Cuántas preguntas deseas responder?</label>
+                    <input type="number" id="num-questions" value="10" min="1" max="20">
+                </div>
+
+                <div class="input-group">
+                    <label for="difficulty">Nivel de dificultad:</label>
+                    <select id="difficulty" style="width: 200px; padding: 12px; font-size: 16px; border-radius: 10px; border: 2px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary);">
+                        <option value="easy">🎯 Fácil - Sin límite de tiempo</option>
+                        <option value="hard">⏱️ Difícil - Contrarreloj (15s)</option>
+                    </select>
+                </div>
+
+                <button id="start-btn">🚀 Iniciar Test</button>
+            </div>
+
+            <!-- Pantalla de Quiz -->
+            <div id="quiz-screen" class="screen">
+                <div class="timer-container" id="timer-container">
+                    <div class="timer-circle">
+                        <svg class="timer-svg" width="60" height="60">
+                            <circle class="timer-background" cx="30" cy="30" r="28"></circle>
+                            <circle class="timer-progress" id="timer-progress" cx="30" cy="30" r="28"></circle>
+                        </svg>
+                        <div class="timer-text" id="timer-text">15</div>
+                    </div>
+                </div>
+                <p id="question-count">Pregunta X de Y</p>
+                <h2 id="question-text"></h2>
+
+                <div class="image-loader" id="image-loader">
+                    <div class="spinner"></div>
+                    <p>Cargando imagen...</p>
+                </div>
+
+                <img id="question-image" src="" alt="Figura de la estructura" style="display: none;">
+
+                <div id="options-container" class="options-container"></div>
+                <div id="feedback"></div>
+                <button id="next-btn" style="display: none;">➡️ Siguiente Pregunta</button>
+            </div>
+
+            <!-- Pantalla de Resultados -->
+            <div id="results-screen" class="screen">
+                <h2>🎉 ¡Test Completado! 🎉</h2>
+
+                <div class="score-display">
+                    <p>Tu puntuación final es:</p>
+                    <div id="score">X de Y</div>
+
+                    <div class="stars-container" id="stars-container">
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                    </div>
+
+                    <div id="achievements"></div>
+                </div>
+
+                <button id="restart-btn">🔄 Intentar de Nuevo</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // --- SISTEMA DE SONIDOS ---
+    class SoundManager {
+        constructor() {
+            this.enabled = true;
+            this.audioContext = null;
+            this.sounds = {};
+        }
+
+        init() {
+            if (typeof AudioContext !== 'undefined') {
+                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                this.createSounds();
+            }
+        }
+
+        createSounds() {
+            // Sonido de respuesta correcta
+            this.sounds.correct = () => {
+                if (!this.enabled || !this.audioContext) return;
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+
+                oscillator.frequency.setValueAtTime(523.25, this.audioContext.currentTime); // C5
+                oscillator.frequency.setValueAtTime(659.25, this.audioContext.currentTime + 0.1); // E5
+                oscillator.frequency.setValueAtTime(783.99, this.audioContext.currentTime + 0.2); // G5
+
+                gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5);
+
+                oscillator.start(this.audioContext.currentTime);
+                oscillator.stop(this.audioContext.currentTime + 0.5);
+            };
+
+            // Sonido de respuesta incorrecta
+            this.sounds.incorrect = () => {
+                if (!this.enabled || !this.audioContext) return;
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+
+                oscillator.frequency.setValueAtTime(200, this.audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(100, this.audioContext.currentTime + 0.3);
+
+                gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+
+                oscillator.start(this.audioContext.currentTime);
+                oscillator.stop(this.audioContext.currentTime + 0.3);
+            };
+
+            // Sonido de click
+            this.sounds.click = () => {
+                if (!this.enabled || !this.audioContext) return;
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+
+                oscillator.frequency.setValueAtTime(1000, this.audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.05);
+
+                oscillator.start(this.audioContext.currentTime);
+                oscillator.stop(this.audioContext.currentTime + 0.05);
+            };
+
+            // Sonido de tic-tac del tiempo
+            this.sounds.tick = () => {
+                if (!this.enabled || !this.audioContext) return;
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+
+                oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.05, this.audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.05);
+
+                oscillator.start(this.audioContext.currentTime);
+                oscillator.stop(this.audioContext.currentTime + 0.05);
+            };
+
+            // Sonido de advertencia de tiempo
+            this.sounds.timeWarning = () => {
+                if (!this.enabled || !this.audioContext) return;
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+
+                oscillator.frequency.setValueAtTime(440, this.audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(220, this.audioContext.currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.2, this.audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.2);
+
+                oscillator.start(this.audioContext.currentTime);
+                oscillator.stop(this.audioContext.currentTime + 0.2);
+            };
+
+            // Sonido de tiempo agotado
+            this.sounds.timeUp = () => {
+                if (!this.enabled || !this.audioContext) return;
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => {
+                        const oscillator = this.audioContext.createOscillator();
+                        const gainNode = this.audioContext.createGain();
+
+                        oscillator.connect(gainNode);
+                        gainNode.connect(this.audioContext.destination);
+
+                        oscillator.frequency.setValueAtTime(150, this.audioContext.currentTime);
+                        gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+
+                        oscillator.start(this.audioContext.currentTime);
+                        oscillator.stop(this.audioContext.currentTime + 0.3);
+                    }, i * 150);
+                }
+            };
+
+            // Sonido de logro
+            this.sounds.achievement = () => {
+                if (!this.enabled || !this.audioContext) return;
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+
+                notes.forEach((freq, index) => {
+                    setTimeout(() => {
+                        const oscillator = this.audioContext.createOscillator();
+                        const gainNode = this.audioContext.createGain();
+
+                        oscillator.connect(gainNode);
+                        gainNode.connect(this.audioContext.destination);
+
+                        oscillator.frequency.setValueAtTime(freq, this.audioContext.currentTime);
+                        gainNode.gain.setValueAtTime(0.2, this.audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+
+                        oscillator.start(this.audioContext.currentTime);
+                        oscillator.stop(this.audioContext.currentTime + 0.3);
+                    }, index * 100);
+                });
+            };
+        }
+
+        play(soundName) {
+            if (this.sounds[soundName]) {
+                this.sounds[soundName]();
+            }
+        }
+
+        toggle() {
+            this.enabled = !this.enabled;
+            return this.enabled;
+        }
+    }
+
+    // --- SISTEMA DE TEMAS ---
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+    }
+
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+
+        soundManager.play('click');
+    }
+
+    function updateThemeIcon(theme) {
+        const icon = document.getElementById('theme-icon');
+        icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+    }
+
+    // --- SISTEMA DE SONIDO ---
+    function toggleSound() {
+        const enabled = soundManager.toggle();
+        const icon = document.getElementById('sound-icon');
+        icon.textContent = enabled ? '🔊' : '🔇';
+        soundManager.play('click');
+    }
+
+    // --- BASE DE DATOS ---
+    const quizDatabase = [
+        {
+            id: "A-I-1",
+            nombre: "Estructura primaria una fase en tangente (0° - 5°)",
+            imagenUrl: "1757470908683blob.jpg"
+        },
+        {
+            id: "A-I-1V",
+            nombre: "Estructura primaria una fase voladiza en tangente (0° - 5°)",
+            imagenUrl: "1757470908686blob.jpg"
+        },
+        {
+            id: "A-I-2",
+            nombre: "Estructura primaria una fase en ángulo (5° - 30°)",
+            imagenUrl: "1757470908688blob.jpg"
+        },
+        {
+            id: "A-I-2V",
+            nombre: "Estructura primaria una fase voladiza en ángulo (5° - 30°)",
+            imagenUrl: "1757470908690blob.jpg"
+        },
+        {
+            id: "A-I-3",
+            nombre: "Estructura primaria una fase de paso vertical (30° - 60°)",
+            imagenUrl: "1757470908692blob.jpg"
+        },
+        {
+            id: "A-I-4",
+            nombre: "Estructura primaria una fase en remate",
+            imagenUrl: "1757470908694blob.jpg"
+        },
+        {
+            id: "A-I-4A",
+            nombre: "Estructura primaria una fase en remate a 180° de remate existente una fase",
+            imagenUrl: "1757470908696blob.jpg"
+        },
+        {
+            id: "A-I-4B",
+            nombre: "Estructura primaria una fase en remate a 180° de remate existente de dos o tres fases",
+            imagenUrl: "1757470908698blob.jpg"
+        },
+        {
+            id: "A-I-4C",
+            nombre: "Estructura primaria una fase en remate a 90° de línea de paso o remate existente",
+            imagenUrl: "1757470908700blob.jpg"
+        },
+        {
+            id: "A-I-4V",
+            nombre: "Estructura primaria una fase voladiza en remate",
+            imagenUrl: "1757470908702blob.jpg"
+        },
+        {
+            id: "A-I-5",
+            nombre: "Estructura primaria una fase en doble remate (0° - 60°)",
+            imagenUrl: "1757470908704blob.jpg"
+        },
+        {
+            id: "A-I-5V",
+            nombre: "Estructura primaria una fase voladiza en doble remate (0° - 60°)",
+            imagenUrl: "1757470908706blob.jpg"
+        },
+        {
+            id: "A-I-6",
+            nombre: "Estructura primaria una fase en doble remate (60° - 90°)",
+            imagenUrl: "1757470908709blob.jpg"
+        },
+        {
+            id: "A-I-7",
+            nombre: "Estructura primaria una fase en tangente (0° - 5°) y derivación",
+            imagenUrl: "1757470908711blob.jpg"
+        },
+        {
+            id: "A-I-7V",
+            nombre: "Estructura primaria una fase voladiza en tangente (0° - 5°) y derivación",
+            imagenUrl: "1757470908713blob.jpg"
+        },
+        {
+            id: "A-I-8",
+            nombre: "Estructura primaria una fase en ángulo (5° - 30°) y derivación",
+            imagenUrl: "1757470908715blob.jpg"
+        },
+        {
+            id: "A-I-8V",
+            nombre: "Estructura primaria una fase voladiza en ángulo (5° - 30°) y derivación",
+            imagenUrl: "1757470908717blob.jpg"
+        },
+        {
+            id: "A-I-9",
+            nombre: "Estructura primaria una fase en doble remate (0° - 60°) y derivación",
+            imagenUrl: "1757470908719blob.jpg"
+        },
+        {
+            id: "A-I-9V",
+            nombre: "Estructura primaria una fase voladiza en doble remate (0° - 60°) y derivación",
+            imagenUrl: "1757470908722blob.jpg"
+        }
+    ];
+
+    // --- ELEMENTOS DEL DOM ---
+    const startScreen = document.getElementById('start-screen');
+    const quizScreen = document.getElementById('quiz-screen');
+    const resultsScreen = document.getElementById('results-screen');
+    const startBtn = document.getElementById('start-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const numQuestionsInput = document.getElementById('num-questions');
+    const difficultySelect = document.getElementById('difficulty');
+    const progressContainer = document.getElementById('progress-container');
+    const progressBar = document.getElementById('progress-bar');
+    const imageLoader = document.getElementById('image-loader');
+    const timerContainer = document.getElementById('timer-container');
+    const timerProgress = document.getElementById('timer-progress');
+    const timerText = document.getElementById('timer-text');
+
+    const questionCountEl = document.getElementById('question-count');
+    const questionTextEl = document.getElementById('question-text');
+    const questionImageEl = document.getElementById('question-image');
+    const optionsContainer = document.getElementById('options-container');
+    const feedbackEl = document.getElementById('feedback');
+    const scoreEl = document.getElementById('score');
+    const starsContainer = document.getElementById('stars-container');
+    const achievementsEl = document.getElementById('achievements');
+
+    // --- ESTADO DEL QUIZ ---
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let questions = [];
+    let totalQuestions = 5;
+    let startTime;
+    let questionStartTime;
+    let totalTime = 0;
+    let perfectStreak = 0;
+    let soundManager;
+    let isHardMode = false;
+    let timerInterval = null;
+    let timeRemaining = 15;
+    let questionAnswered = false;
+    let timeouts = 0;
+
+    // --- INICIALIZACIÓN ---
+    window.addEventListener('DOMContentLoaded', () => {
+        initTheme();
+        soundManager = new SoundManager();
+        soundManager.init();
+    });
+
+    // --- GENERADORES DE PREGUNTAS ---
+    function generateIdQuestion(correctStructure) {
+        const correctAnswer = correctStructure.id;
+        const incorrectOptions = [];
+        const tempDatabase = [...quizDatabase].sort(() => Math.random() - 0.5);
+
+        for (const structure of tempDatabase) {
+            if (structure.id !== correctAnswer && !incorrectOptions.includes(structure.id)) {
+                incorrectOptions.push(structure.id);
+            }
+            if (incorrectOptions.length >= 3) break;
+        }
+
+        const allOptions = [
+            { text: correctAnswer, correct: true },
+            { text: incorrectOptions[0], correct: false },
+            { text: incorrectOptions[1], correct: false },
+            { text: incorrectOptions[2], correct: false }
+        ].sort(() => Math.random() - 0.5);
+
+        return {
+            text: `Identifica el CÓDIGO de la siguiente estructura:`,
+            image: correctStructure.imagenUrl,
+            options: allOptions,
+            answer: correctAnswer
+        };
+    }
+
+    function generateNameQuestion(correctStructure) {
+        const correctAnswer = correctStructure.nombre;
+        const incorrectOptions = [];
+        const tempDatabase = [...quizDatabase].sort(() => Math.random() - 0.5);
+
+        for (const structure of tempDatabase) {
+            if (structure.nombre !== correctAnswer && !incorrectOptions.includes(structure.nombre)) {
+                incorrectOptions.push(structure.nombre);
+            }
+            if (incorrectOptions.length >= 3) break;
+        }
+
+        const allOptions = [
+            { text: correctAnswer, correct: true },
+            { text: incorrectOptions[0], correct: false },
+            { text: incorrectOptions[1], correct: false },
+            { text: incorrectOptions[2], correct: false }
+        ].sort(() => Math.random() - 0.5);
+
+        return {
+            text: `Identifica la DESCRIPCIÓN de la siguiente estructura:`,
+            image: correctStructure.imagenUrl,
+            options: allOptions,
+            answer: correctAnswer
+        };
+    }
+
+    const questionGenerators = [generateIdQuestion, generateNameQuestion];
+
+    // --- LÓGICA DEL QUIZ ---
+    function startQuiz() {
+        totalQuestions = parseInt(numQuestionsInput.value) || 5;
+        isHardMode = difficultySelect.value === 'hard';
+
+        if (quizDatabase.length < 4) {
+            alert("Error: Se necesitan al menos 4 estructuras en la base de datos.");
+            return;
+        }
+
+        if (totalQuestions > quizDatabase.length) {
+            totalQuestions = quizDatabase.length;
+            numQuestionsInput.value = totalQuestions;
+        }
+
+        // Resetear estado
+        score = 0;
+        currentQuestionIndex = 0;
+        questions = [];
+        perfectStreak = 0;
+        totalTime = 0;
+        timeouts = 0;
+        startTime = Date.now();
+
+        const shuffledDb = [...quizDatabase].sort(() => Math.random() - 0.5);
+
+        // Generar preguntas
+        for (let i = 0; i < totalQuestions; i++) {
+            const randomGenerator = questionGenerators[Math.floor(Math.random() * questionGenerators.length)];
+            questions.push(randomGenerator(shuffledDb[i]));
+        }
+
+        // Cambiar pantallas
+        startScreen.classList.remove('active');
+        resultsScreen.classList.remove('active');
+        quizScreen.classList.add('active');
+        progressContainer.style.display = 'block';
+
+        soundManager.play('click');
+        displayQuestion();
+    }
+
+    function displayQuestion() {
+        feedbackEl.textContent = '';
+        feedbackEl.className = '';
+        nextBtn.style.display = 'none';
+        optionsContainer.innerHTML = '';
+        questionStartTime = Date.now();
+        questionAnswered = false;
+
+        // Configurar temporizador para modo difícil
+        if (isHardMode) {
+            startTimer();
+        }
+
+        const question = questions[currentQuestionIndex];
+
+        // Actualizar progreso
+        const progress = ((currentQuestionIndex) / totalQuestions) * 100;
+        progressBar.style.setProperty('--progress-width', `${progress}%`);
+        progressBar.style.width = `${progress}%`;
+
+        questionCountEl.textContent = `Pregunta ${currentQuestionIndex + 1} de ${totalQuestions}`;
+        questionTextEl.textContent = question.text;
+
+        // Cargar imagen con loader
+        imageLoader.classList.add('loading');
+        questionImageEl.style.display = 'none';
+
+        const img = new Image();
+        img.onload = () => {
+            imageLoader.classList.remove('loading');
+            questionImageEl.src = question.image;
+            questionImageEl.style.display = 'block';
+        };
+        img.src = question.image;
+
+        // Crear botones de opciones con animación escalonada
+        question.options.forEach((option, index) => {
+            const button = document.createElement('button');
+            button.textContent = option.text;
+            button.classList.add('option-btn');
+            button.style.animation = `fadeIn 0.5s ease ${index * 0.1}s both`;
+            button.addEventListener('click', () => selectAnswer(button, option.correct, question.answer));
+            optionsContainer.appendChild(button);
+        });
+    }
+
+    function selectAnswer(button, isCorrect, correctAnswer) {
+        if (questionAnswered) return;
+        questionAnswered = true;
+
+        // Detener temporizador si está activo
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+
+        const timeTaken = (Date.now() - questionStartTime) / 1000;
+        totalTime += timeTaken;
+
+        // Deshabilitar todas las opciones
+        Array.from(optionsContainer.children).forEach(btn => btn.disabled = true);
+
+        if (isCorrect) {
+            score++;
+            perfectStreak++;
+            button.classList.add('correct');
+            feedbackEl.innerHTML = `✅ ¡Correcto! <small>(${timeTaken.toFixed(1)}s)</small>`;
+            feedbackEl.className = 'correct';
+            soundManager.play('correct');
+
+            // Bonus por velocidad
+            if (timeTaken < 3) {
+                feedbackEl.innerHTML += ' ⚡ ¡Respuesta rápida!';
+            }
+        } else {
+            perfectStreak = 0;
+            button.classList.add('incorrect');
+            feedbackEl.innerHTML = `❌ Incorrecto. La respuesta correcta era: <strong>${correctAnswer}</strong>`;
+            feedbackEl.className = 'incorrect';
+            soundManager.play('incorrect');
+
+            // Marcar la respuesta correcta
+            Array.from(optionsContainer.children).forEach(btn => {
+                if (btn.textContent === correctAnswer) {
+                    btn.classList.add('correct');
+                }
+            });
+        }
+
+        nextBtn.style.display = 'block';
+    }
+
+    // --- SISTEMA DE TEMPORIZADOR ---
+    function startTimer() {
+        timeRemaining = 15;
+        timerContainer.classList.add('active');
+        timerProgress.classList.remove('warning', 'danger');
+        timerText.classList.remove('warning', 'danger');
+        updateTimerDisplay();
+
+        if (timerInterval) {
+            clearInterval(timerInterval);
+        }
+
+        timerInterval = setInterval(() => {
+            timeRemaining--;
+            updateTimerDisplay();
+
+            // Sonidos de advertencia
+            if (timeRemaining === 5) {
+                timerProgress.classList.add('warning');
+                timerText.classList.add('warning');
+                soundManager.play('timeWarning');
+            } else if (timeRemaining === 3) {
+                timerProgress.classList.remove('warning');
+                timerProgress.classList.add('danger');
+                timerText.classList.remove('warning');
+                timerText.classList.add('danger');
+                soundManager.play('tick');
+            } else if (timeRemaining === 2 || timeRemaining === 1) {
+                soundManager.play('tick');
+            } else if (timeRemaining === 0) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                soundManager.play('timeUp');
+                handleTimeout();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        timerText.textContent = timeRemaining;
+        const offset = 188.5 - (188.5 * timeRemaining) / 15;
+        timerProgress.style.strokeDashoffset = offset;
+    }
+
+    function handleTimeout() {
+        if (questionAnswered) return;
+        questionAnswered = true;
+        timeouts++;
+
+        // Marcar como incorrecto
+        Array.from(optionsContainer.children).forEach(btn => {
+            btn.disabled = true;
+            const option = questions[currentQuestionIndex].options.find(opt => opt.text === btn.textContent);
+            if (option && option.correct) {
+                btn.classList.add('correct');
+            }
+        });
+
+        feedbackEl.innerHTML = '⏰ ¡Tiempo agotado! La respuesta correcta era: <strong>' + questions[currentQuestionIndex].answer + '</strong>';
+        feedbackEl.className = 'incorrect';
+        perfectStreak = 0;
+
+        nextBtn.style.display = 'block';
+    }
+
+    function showResults() {
+        // Limpiar temporizador si existe
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        timerContainer.classList.remove('active');
+
+        quizScreen.classList.remove('active');
+        resultsScreen.classList.add('active');
+        progressContainer.style.display = 'none';
+
+        const percentage = Math.round((score / totalQuestions) * 100);
+        const avgTime = (totalTime / totalQuestions).toFixed(1);
+
+        scoreEl.innerHTML = `${score} de ${totalQuestions}<br><small>${percentage}%</small>`;
+
+        // Mostrar timeouts si hubo alguno en modo difícil
+        if (isHardMode && timeouts > 0) {
+            scoreEl.innerHTML += `<br><small style="color: var(--danger-color);">⏰ Timeouts: ${timeouts}</small>`;
+        }
+
+        // Sistema de estrellas
+        const stars = starsContainer.querySelectorAll('.star');
+        const starCount = Math.ceil((percentage / 100) * 5);
+
+        stars.forEach((star, index) => {
+            setTimeout(() => {
+                if (index < starCount) {
+                    star.classList.add('filled');
+                    soundManager.play('achievement');
+                }
+            }, index * 200);
+        });
+
+        // Logros
+        const achievements = [];
+
+        if (percentage === 100) {
+            achievements.push('🏆 Perfección Total');
+        } else if (percentage >= 90) {
+            achievements.push('🥇 Excelente');
+        } else if (percentage >= 70) {
+            achievements.push('🥈 Muy Bien');
+        } else if (percentage >= 50) {
+            achievements.push('🥉 Bien');
+        }
+
+        if (avgTime < 5) {
+            achievements.push('⚡ Velocista');
+        }
+
+        if (perfectStreak >= 5) {
+            achievements.push('🔥 Racha Perfecta');
+        }
+
+        if (isHardMode) {
+            if (timeouts === 0) {
+                achievements.push('⏱️ Maestro del Tiempo');
+            }
+            if (percentage >= 70) {
+                achievements.push('💪 Superviviente Difícil');
+            }
+        }
+
+        achievementsEl.innerHTML = achievements.map(a =>
+            `<span class="achievement">${a}</span>`
+        ).join('');
+
+        if (achievements.length > 0) {
+            soundManager.play('achievement');
+        }
+    }
+
+    // --- EVENT LISTENERS ---
+    startBtn.addEventListener('click', startQuiz);
+
+    nextBtn.addEventListener('click', () => {
+        // Limpiar temporizador antes de continuar
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        timerContainer.classList.remove('active');
+
+        currentQuestionIndex++;
+        if (currentQuestionIndex < totalQuestions) {
+            displayQuestion();
+        } else {
+            showResults();
+        }
+    });
+
+    restartBtn.addEventListener('click', () => {
+        // Resetear estrellas
+        starsContainer.querySelectorAll('.star').forEach(star => {
+            star.classList.remove('filled');
+        });
+
+        resultsScreen.classList.remove('active');
+        startScreen.classList.add('active');
+        soundManager.play('click');
+    });
+
+    // Click en imagen para zoom
+    questionImageEl.addEventListener('click', function() {
+        if (this.style.transform === 'scale(1.5)') {
+            this.style.transform = 'scale(1)';
+            this.style.cursor = 'zoom-in';
+        } else {
+            this.style.transform = 'scale(1.5)';
+            this.style.cursor = 'zoom-out';
+        }
+    });
+
+    // Prevenir zoom accidental en móviles
+    document.addEventListener('gesturestart', function(e) {
+        e.preventDefault();
+    });
+    </script>
+</body>
+</html>
