@@ -204,46 +204,106 @@
         }
 
         /* --- PANTALLA DE INICIO --- */
+        #start-screen {
+            text-align: center;
+            max-width: 100%;
+        }
+
         #start-screen h2 {
             color: var(--primary-color);
-            margin-bottom: 20px;
-            font-size: 2em;
+            margin-bottom: 25px;
+            font-size: 2.2em;
+            font-weight: 700;
+            text-shadow: none;
+        }
+
+        #start-screen h2 .emoji {
+            background: none;
+            -webkit-background-clip: initial;
+            -webkit-text-fill-color: initial;
+            background-clip: initial;
+            color: initial;
         }
 
         #start-screen p {
             color: var(--text-secondary);
-            margin-bottom: 30px;
-            line-height: 1.6;
+            margin-bottom: 40px;
+            line-height: 1.7;
+            font-size: 1.1em;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .settings-container {
+            max-width: 400px;
+            margin: 0 auto 40px;
+            background: var(--bg-primary);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
         }
 
         .input-group {
-            margin: 30px 0;
+            margin: 25px 0;
             animation: slideIn 0.6s ease;
+            text-align: left;
         }
 
         .input-group label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             color: var(--text-primary);
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 1.05em;
         }
 
         .input-group input {
-            width: 120px;
-            padding: 12px;
+            width: 100px;
+            padding: 14px 16px;
             font-size: 18px;
-            border-radius: 10px;
+            border-radius: 12px;
             border: 2px solid var(--border-color);
-            background: var(--bg-primary);
+            background: var(--bg-secondary);
             color: var(--text-primary);
             transition: all var(--transition-speed);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            font-weight: 600;
         }
 
         .input-group input:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
-            transform: scale(1.05);
+            box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.15), var(--shadow-md);
+            transform: scale(1.02);
+        }
+
+        .input-group select {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 16px;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all var(--transition-speed);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.15), var(--shadow-md);
+            transform: scale(1.02);
+        }
+
+        .input-group select:hover {
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-md);
         }
 
         /* --- BOTONES MEJORADOS --- */
@@ -251,15 +311,35 @@
             background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
             color: white;
             border: none;
-            border-radius: 10px;
-            padding: 15px 30px;
-            font-size: 16px;
-            font-weight: 600;
+            border-radius: 12px;
+            padding: 18px 40px;
+            font-size: 17px;
+            font-weight: 700;
             cursor: pointer;
             transition: all var(--transition-speed);
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-md);
             position: relative;
             overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 20px auto;
+            display: block;
+            min-width: 200px;
+        }
+
+        #start-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            padding: 20px 50px;
+            font-size: 18px;
+            margin-top: 40px;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        #start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(40, 167, 69, 0.4);
         }
 
         button::before {
@@ -332,9 +412,9 @@
             stroke: var(--primary-color);
             stroke-width: 4;
             stroke-linecap: round;
-            stroke-dasharray: 188.5;
+            stroke-dasharray: 175.93;
             stroke-dashoffset: 0;
-            transition: stroke-dashoffset 1s linear, stroke 0.3s;
+            transition: stroke 0.3s;
         }
 
         .timer-progress.warning {
@@ -380,11 +460,11 @@
             border: 3px solid var(--border-color);
             box-shadow: var(--shadow-md);
             transition: all var(--transition-speed);
-            cursor: zoom-in;
+            background-color: #ffffff;
+            padding: 15px;
         }
 
         #question-image:hover {
-            transform: scale(1.02);
             box-shadow: var(--shadow-lg);
         }
 
@@ -540,23 +620,6 @@
             box-shadow: var(--shadow-sm);
         }
 
-        /* --- SISTEMA DE ESTRELLAS --- */
-        .stars-container {
-            margin: 20px 0;
-        }
-
-        .star {
-            display: inline-block;
-            font-size: 40px;
-            color: #ddd;
-            margin: 0 5px;
-            transition: all var(--transition-speed);
-        }
-
-        .star.filled {
-            color: #ffc107;
-            animation: starBurst 0.5s ease;
-        }
 
         /* --- CONTROLES DE SONIDO --- */
         .sound-control {
@@ -581,23 +644,346 @@
             font-size: 24px;
         }
 
-        /* --- RESPONSIVE --- */
-        @media (max-width: 600px) {
+        /* --- RESPONSIVE DESIGN --- */
+
+        /* Mobile First - Base styles for small screens */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+                min-height: 100vh;
+            }
+
             .quiz-container {
-                border-radius: 10px;
+                border-radius: 15px;
+                max-width: 100%;
+                margin: 0;
+                box-shadow: var(--shadow-sm);
+            }
+
+            .quiz-header {
+                padding: 20px 15px;
             }
 
             .quiz-header h1 {
-                font-size: 1.5em;
+                font-size: 1.3em;
+                line-height: 1.3;
             }
 
-            .option-btn {
-                padding: 15px;
+            .quiz-body {
+                padding: 20px 15px;
+                min-height: auto;
+            }
+
+            /* Start Screen Mobile */
+            #start-screen h2 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+
+            #start-screen p {
+                font-size: 1em;
+                margin-bottom: 25px;
+                line-height: 1.6;
+            }
+
+            .settings-container {
+                max-width: 100%;
+                padding: 20px;
+                margin-bottom: 30px;
+            }
+
+            .input-group {
+                margin: 20px 0;
+            }
+
+            .input-group label {
+                font-size: 1em;
+                margin-bottom: 10px;
+            }
+
+            .input-group input {
+                width: 80px;
+                padding: 12px;
+                font-size: 16px;
+            }
+
+            .input-group select {
+                padding: 14px 16px;
+                font-size: 15px;
+            }
+
+            #start-btn {
+                padding: 16px 40px;
+                font-size: 16px;
+                margin-top: 30px;
+                width: 100%;
+                max-width: 280px;
+            }
+
+            /* Quiz Screen Mobile */
+            #question-count {
+                font-size: 0.9em;
+                margin-bottom: 12px;
+            }
+
+            #question-text {
+                font-size: 1.1em;
+                margin: 15px 0;
+                line-height: 1.3;
+            }
+
+            #question-image {
+                padding: 10px;
+                margin: 15px 0;
+                border-radius: 12px;
+                border-width: 2px;
+            }
+
+            .timer-container {
+                top: 10px;
+                right: 10px;
+            }
+
+            .timer-circle {
+                width: 50px;
+                height: 50px;
+            }
+
+            .timer-svg {
+                width: 50px;
+                height: 50px;
+            }
+
+            .timer-text {
                 font-size: 14px;
             }
 
-            #score {
+            .option-btn {
+                padding: 14px 16px;
+                font-size: 15px;
+                border-radius: 10px;
+                margin-bottom: 8px;
+            }
+
+            #feedback {
+                padding: 12px;
+                font-size: 1em;
+                margin-top: 15px;
+                border-radius: 8px;
+            }
+
+            #next-btn {
+                padding: 14px 30px;
+                font-size: 15px;
+                margin-top: 15px;
+                width: 100%;
+                max-width: 250px;
+            }
+
+            /* Results Screen Mobile */
+            #results-screen h2 {
                 font-size: 2em;
+                margin-bottom: 15px;
+            }
+
+            .score-display {
+                padding: 20px;
+                margin: 15px 0;
+                border-radius: 15px;
+            }
+
+            #score {
+                font-size: 2.2em;
+                margin: 15px 0;
+            }
+
+            .achievement {
+                padding: 8px 16px;
+                margin: 8px 5px;
+                font-size: 14px;
+                border-radius: 25px;
+            }
+
+            #restart-btn {
+                padding: 16px 40px;
+                font-size: 16px;
+                width: 100%;
+                max-width: 280px;
+            }
+
+            /* Controls Mobile */
+            .theme-toggle, .sound-control {
+                padding: 8px 12px;
+                border-radius: 25px;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            .sound-control {
+                bottom: 10px;
+                right: 10px;
+            }
+
+            .theme-toggle span, .sound-control span {
+                font-size: 20px;
+            }
+        }
+
+        /* Tablet Portrait */
+        @media (min-width: 481px) and (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .quiz-container {
+                max-width: 90%;
+                border-radius: 18px;
+            }
+
+            .quiz-header h1 {
+                font-size: 1.6em;
+            }
+
+            .quiz-body {
+                padding: 25px;
+            }
+
+            #start-screen h2 {
+                font-size: 2em;
+            }
+
+            .settings-container {
+                max-width: 450px;
+                padding: 25px;
+            }
+
+            .option-btn {
+                padding: 16px 18px;
+                font-size: 16px;
+            }
+
+            #score {
+                font-size: 2.5em;
+            }
+        }
+
+        /* Tablet Landscape & Small Desktop */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .quiz-container {
+                max-width: 750px;
+            }
+
+            .quiz-body {
+                padding: 30px;
+            }
+
+            .settings-container {
+                max-width: 500px;
+            }
+        }
+
+        /* Large Desktop */
+        @media (min-width: 1025px) {
+            .quiz-container {
+                max-width: 800px;
+            }
+
+            .quiz-body {
+                padding: 35px;
+            }
+        }
+
+        /* Landscape Orientation for Mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            body {
+                padding: 5px;
+            }
+
+            .quiz-header {
+                padding: 15px;
+            }
+
+            .quiz-header h1 {
+                font-size: 1.2em;
+            }
+
+            .quiz-body {
+                padding: 15px;
+            }
+
+            #start-screen h2 {
+                font-size: 1.5em;
+                margin-bottom: 15px;
+            }
+
+            #start-screen p {
+                font-size: 0.9em;
+                margin-bottom: 20px;
+            }
+
+            .settings-container {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+
+            #question-image {
+                max-height: 200px;
+                object-fit: contain;
+            }
+        }
+
+        /* High DPI Displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .quiz-container {
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            }
+
+            .option-btn {
+                border-width: 1px;
+            }
+        }
+
+        /* Touch Device Optimizations */
+        @media (pointer: coarse) {
+            .option-btn {
+                min-height: 48px;
+                padding: 16px 20px;
+            }
+
+            button {
+                min-height: 44px;
+                padding: 16px 32px;
+            }
+
+            .input-group input, .input-group select {
+                min-height: 44px;
+                padding: 12px 16px;
+            }
+
+            .theme-toggle, .sound-control {
+                min-width: 44px;
+                min-height: 44px;
+                padding: 10px;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .theme-toggle, .sound-control {
+                display: none;
+            }
+
+            .quiz-container {
+                box-shadow: none;
+                border: 1px solid #000;
+            }
+
+            #question-image {
+                max-width: 100%;
+                page-break-inside: avoid;
             }
         }
 
@@ -652,20 +1038,22 @@
         <div class="quiz-body">
             <!-- Pantalla de Inicio -->
             <div id="start-screen" class="screen active">
-                <h2>¡Bienvenido! 👋</h2>
+                <h2>¡Bienvenido! <span class="emoji">👋</span></h2>
                 <p>Pon a prueba tus conocimientos sobre las estructuras de líneas de media tensión. Este test interactivo te ayudará a dominar la identificación de diferentes configuraciones eléctricas.</p>
 
-                <div class="input-group">
-                    <label for="num-questions">¿Cuántas preguntas deseas responder?</label>
-                    <input type="number" id="num-questions" value="10" min="1" max="20">
-                </div>
+                <div class="settings-container">
+                    <div class="input-group">
+                        <label for="num-questions">📊 ¿Cuántas preguntas deseas responder?</label>
+                        <input type="number" id="num-questions" value="10" min="1" max="19" placeholder="10">
+                    </div>
 
-                <div class="input-group">
-                    <label for="difficulty">Nivel de dificultad:</label>
-                    <select id="difficulty" style="width: 200px; padding: 12px; font-size: 16px; border-radius: 10px; border: 2px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary);">
-                        <option value="easy">🎯 Fácil - Sin límite de tiempo</option>
-                        <option value="hard">⏱️ Difícil - Contrarreloj (15s)</option>
-                    </select>
+                    <div class="input-group">
+                        <label for="difficulty">⚙️ Nivel de dificultad:</label>
+                        <select id="difficulty">
+                            <option value="easy">🎯 Fácil - Sin límite de tiempo</option>
+                            <option value="hard">⏱️ Difícil - Contrarreloj (15s)</option>
+                        </select>
+                    </div>
                 </div>
 
                 <button id="start-btn">🚀 Iniciar Test</button>
@@ -705,13 +1093,6 @@
                     <p>Tu puntuación final es:</p>
                     <div id="score">X de Y</div>
 
-                    <div class="stars-container" id="stars-container">
-                        <span class="star">⭐</span>
-                        <span class="star">⭐</span>
-                        <span class="star">⭐</span>
-                        <span class="star">⭐</span>
-                        <span class="star">⭐</span>
-                    </div>
 
                     <div id="achievements"></div>
                 </div>
@@ -1038,7 +1419,6 @@
     const optionsContainer = document.getElementById('options-container');
     const feedbackEl = document.getElementById('feedback');
     const scoreEl = document.getElementById('score');
-    const starsContainer = document.getElementById('stars-container');
     const achievementsEl = document.getElementById('achievements');
 
     // --- ESTADO DEL QUIZ ---
@@ -1171,6 +1551,7 @@
         questionStartTime = Date.now();
         questionAnswered = false;
 
+
         // Configurar temporizador para modo difícil
         if (isHardMode) {
             startTimer();
@@ -1295,8 +1676,10 @@
 
     function updateTimerDisplay() {
         timerText.textContent = timeRemaining;
-        const offset = 188.5 - (188.5 * timeRemaining) / 15;
+        const circumference = 175.93;
+        const offset = circumference - (circumference * timeRemaining) / 15;
         timerProgress.style.strokeDashoffset = offset;
+        timerProgress.style.transition = timeRemaining > 0 ? 'stroke-dashoffset 1s linear, stroke 0.3s' : 'stroke 0.3s';
     }
 
     function handleTimeout() {
@@ -1342,18 +1725,6 @@
             scoreEl.innerHTML += `<br><small style="color: var(--danger-color);">⏰ Timeouts: ${timeouts}</small>`;
         }
 
-        // Sistema de estrellas
-        const stars = starsContainer.querySelectorAll('.star');
-        const starCount = Math.ceil((percentage / 100) * 5);
-
-        stars.forEach((star, index) => {
-            setTimeout(() => {
-                if (index < starCount) {
-                    star.classList.add('filled');
-                    soundManager.play('achievement');
-                }
-            }, index * 200);
-        });
 
         // Logros
         const achievements = [];
@@ -1414,31 +1785,47 @@
     });
 
     restartBtn.addEventListener('click', () => {
-        // Resetear estrellas
-        starsContainer.querySelectorAll('.star').forEach(star => {
-            star.classList.remove('filled');
-        });
-
         resultsScreen.classList.remove('active');
         startScreen.classList.add('active');
         soundManager.play('click');
     });
 
-    // Click en imagen para zoom
-    questionImageEl.addEventListener('click', function() {
-        if (this.style.transform === 'scale(1.5)') {
-            this.style.transform = 'scale(1)';
-            this.style.cursor = 'zoom-in';
-        } else {
-            this.style.transform = 'scale(1.5)';
-            this.style.cursor = 'zoom-out';
-        }
-    });
 
-    // Prevenir zoom accidental en móviles
+    // Optimizaciones para móviles
     document.addEventListener('gesturestart', function(e) {
         e.preventDefault();
     });
+
+    // Prevenir zoom en inputs en iOS
+    document.addEventListener('touchstart', function() {}, {passive: true});
+
+    // Mejorar rendimiento en móviles
+    if ('ontouchstart' in window) {
+        document.body.classList.add('touch-device');
+    }
+
+    // Optimizar scroll en móviles
+    let isScrolling = false;
+    window.addEventListener('scroll', function() {
+        if (!isScrolling) {
+            window.requestAnimationFrame(function() {
+                isScrolling = false;
+            });
+            isScrolling = true;
+        }
+    }, {passive: true});
+
+    // Manejar cambios de orientación
+    window.addEventListener('orientationchange', function() {
+        setTimeout(function() {
+            window.scrollTo(0, 1);
+        }, 500);
+    });
+
+    // Mejorar performance en dispositivos táctiles
+    if (window.DeviceMotionEvent) {
+        document.documentElement.style.setProperty('--transition-speed', '0.2s');
+    }
     </script>
 </body>
 </html>
